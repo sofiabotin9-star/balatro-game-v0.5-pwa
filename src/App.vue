@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import { vFitHand } from './utils/fit-hand.js'
 
 const BASE_URL = import.meta.env.BASE_URL
 import { createDeck, identifyHand } from './utils/poker.js'
@@ -1448,6 +1449,8 @@ async function playHand() {
 
     const rect = sourceEl.getBoundingClientRect()
     const clone = sourceEl.cloneNode(true)
+    const sourceStyle = getComputedStyle(sourceEl)
+    clone.style.setProperty('--hand-card-width', sourceStyle.getPropertyValue('--hand-card-width'))
     // 副本必须去掉 .selected：scoped CSS .playing-card.selected 自带
     // transform: translateY(-22px)，会和 GSAP 的 inline transform 冲突跳变
     clone.classList.remove('selected')
@@ -1464,6 +1467,11 @@ async function playHand() {
       transform: none;
     `
     document.body.appendChild(clone)
+    // Preserve the responsive face typography outside the layout's CSS scope.
+    for (const selector of ['.rank', '.suit', '.center-suit']) {
+      const original = sourceEl.querySelector(selector)
+      clone.querySelectorAll(selector).forEach(node => { node.style.fontSize = getComputedStyle(original).fontSize })
+    }
     cloneByCardId.set(card.id, clone)
 
     sourceEl.style.visibility = 'hidden'
@@ -1473,9 +1481,9 @@ async function playHand() {
   const targetEl = playTableRef.value
   if (targetEl) {
     const dst = targetEl.getBoundingClientRect()
-    const cardWidth = 88
-    const cardHeight = 124
-    const gap = 14
+    const gap = Math.min(8, dst.width * .02)
+    const cardWidth = Math.max(1, Math.min(88, (dst.height - 26) / 1.4, (dst.width - 20 - (orderedSelected.length - 1) * gap) / orderedSelected.length))
+    const cardHeight = cardWidth * 1.4
     const totalWidth = orderedSelected.length * cardWidth + Math.max(0, orderedSelected.length - 1) * gap
     const startLeft = dst.left + dst.width / 2 - totalWidth / 2
     const targetTop = dst.top + dst.height / 2 - cardHeight / 2
@@ -1490,7 +1498,8 @@ async function playHand() {
       gsap.to(clone, {
         x: dx,
         y: dy,
-        scale: 1.05,
+        scale: cardWidth / cloneRect.width,
+        transformOrigin: 'top left',
         duration: 0.5,
         ease: 'power2.out',
         delay: orderIdx * 0.04
@@ -2066,9 +2075,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="balatro-shell" :class="{ 'pilot-active': pilotVisible }">
+  <div class="balatro-shell responsive-game" :class="{ 'pilot-active': pilotVisible }">
     <!-- 全局设置入口（任意 phase 可见） -->
     <button
+      v-if="!isBattlePhase"
       class="hud-icon-btn settings-trigger"
       data-no-sfx="true"
       aria-label="设置"
@@ -2332,6 +2342,10 @@ onBeforeUnmount(() => {
                     @longpress="showJokerDetail"
                   />
                 </div>
+                <div class="shop-item-summary">
+                  <strong>{{ joker.name }}</strong>
+                  <p>{{ joker.description }}</p>
+                </div>
                 <div class="shop-item-bottom">
                   <span class="shop-item-price">$ {{ joker.price }}</span>
                   <button
@@ -2438,7 +2452,7 @@ onBeforeUnmount(() => {
 
           <!-- 4.2 Round score -->
           <div class="sb-panel sb-round-score">
-            <div class="sb-panel-label">Round score</div>
+            <div class="sb-panel-label">本回合得分</div>
             <div class="sb-inset">
               <span class="sb-round-val"><ScoreCounter :value="totalScore" /></span>
             </div>
@@ -2597,7 +2611,7 @@ onBeforeUnmount(() => {
                 <button @click="showHandInfo = true" class="btn-sort info">比赛信息</button>
               </div>
             </div>
-            <div class="hand-fan">
+            <div class="hand-fan" v-fit-hand>
               <PlayingCard
                 v-for="(card, index) in hand"
                 :ref="(el) => setHandCardRef(el, index)"
@@ -4877,3 +4891,4 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 14px 3px rgba(227, 75, 111, .8);
 }
 </style>
+

@@ -1,0 +1,44 @@
+手机网页修改版 · 上传说明
+
+这是可通过 GitHub Pages 在 iPhone Safari 中游玩的网页游戏。
+不需要 Mac、Xcode，也不需要把它安装成 iOS 原生 App。
+
+一、使用 GitHub Desktop 上传完整项目（推荐）
+1. 解压 ZIP，打开里面的 balatro-mobile-web 文件夹。
+2. 在 GitHub Desktop 打开你的游戏仓库，选择 Repository → Show in Explorer。
+3. 将 balatro-mobile-web 里面的全部文件和文件夹复制到仓库根目录，替换同名文件。
+   package.json、index.html、src、public、.github 应直接位于仓库根目录。
+   不要只上传 ZIP，也不要在仓库中再套一层 balatro-mobile-web 文件夹。
+   保留你仓库自身的 .git 文件夹。
+4. 在 GitHub Desktop 填写提交说明，点击 Commit to main，然后 Push origin。
+5. 打开 GitHub 网站上的该仓库：Settings → Pages → Build and deployment → Source，选择 GitHub Actions。
+6. 打开 Actions → Deploy PWA，等待成功。如果首次推送发生在启用 Pages 之前，在该工作流页面点击 Run workflow 重新运行。
+7. 回到 Settings → Pages，复制显示的网站地址，用 iPhone Safari 打开。
+
+自动发布配置监听 main 分支。如果仓库使用其他分支，请将 .github/workflows/deploy.yml 的 branches: [main] 改为实际分支名。
+GitHub Desktop 提交的是源码；GitHub Actions 会自动安装依赖、构建并发布，无需你在电脑上运行构建命令。
+GitHub Pages 是否适用于你的仓库可见性，取决于账户方案；以 Settings → Pages 的提示为准。
+
+二、已经构建好的网页在哪里
+项目内的 dist 文件夹是本次构建完成的网页成品，包含完整图片、音频和离线缓存文件。
+它适合放到静态网页服务器上，支持仓库子路径。请通过 HTTP/HTTPS 访问，不要直接双击 HTML 当作完整运行方式。
+默认上传方式请使用上一节的完整项目，不要将源码 index.html 当成已构建的网页。
+
+三、iPhone 使用
+Safari 打开发布后的网址即可玩。需要主屏幕图标时，可在 Safari 分享菜单中选择“添加到主屏幕”。
+竖屏、横屏都会自动排版，不必锁定方向。小丑牌详情可长按查看。
+首次联网打开后会缓存资源；本次没有在实体 iPhone 上验证离线模式，离线可用性仍受 iOS 存储策略影响。
+若更新后仍显示旧界面，先联网关闭并重新打开页面，再刷新一次。
+
+四、本次完成
+全部战斗状态、分数、筹码倍率、手数弃牌、设置、重新开始、提示、排序、手牌与操作按钮统一按手机空间排版。
+手牌按区域宽高和牌数自动计算尺寸，水平居中，重叠最多约 22%，无需横向拖动。
+五张出牌动画也随牌桌尺寸缩放。已处理 iPhone 四侧安全区。
+盲注选择、商店、比赛信息和设置窗口同步压缩排版；较长设置内容可纵向滚动。
+修复 GitHub Pages 仓库子路径下的小丑牌图片地址，并让离线缓存跳过不应发布的隐藏占位文件。
+
+验证：八种手机竖横屏尺寸、模拟安全区、选牌出牌、弃牌补牌、排序、通关、商店购买、下一回合、设置与比赛信息；生产构建通过。
+这些是桌面浏览器中的手机尺寸模拟测试，不等同于实体 iPhone Safari 测试。尚未替你上传或发布 GitHub。
+
+GitHub 官方说明：
+https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
