@@ -1,0 +1,377 @@
+/* v1.5.6 共享动效：fade+slide+scale 转场、Joker 炸裂触发、稀有度光效精修、
+   牌型大字 banner、得分飘字、桌面 impact、screen-shake、boss 粒子升级、降级 */
+
+/* ========== (a) 过场转场升级（fade + slide + scale） ========== */
+.fade-enter-active, .fade-leave-active {
+  transition:
+    opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.fade-enter-from { opacity: 0; transform: translateY(28px) scale(0.96); }
+.fade-leave-to   { opacity: 0; transform: translateY(-28px) scale(0.98); }
+
+/* ========== (b) Joker 触发反馈（炸裂版） ========== */
+.joker-card.triggering {
+  animation: joker-trigger 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 5;
+  position: relative;
+}
+.joker-card.triggering::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 14px;
+  background: radial-gradient(circle, rgba(255,209,102,0.6) 0%, rgba(255,209,102,0.2) 40%, transparent 70%);
+  animation: joker-trigger-aura 0.7s ease-out;
+  pointer-events: none;
+  z-index: -1;
+}
+@keyframes joker-trigger {
+  0%   { transform: translateY(0) scale(1) rotate(0deg);     filter: drop-shadow(0 0 0 transparent) brightness(1); }
+  15%  { transform: translateY(-18px) scale(1.22) rotate(-6deg); filter: drop-shadow(0 0 24px var(--gold)) brightness(1.4); }
+  35%  { transform: translateY(-12px) scale(1.16) rotate(5deg);  filter: drop-shadow(0 0 18px var(--gold)) brightness(1.25); }
+  60%  { transform: translateY(-6px)  scale(1.08) rotate(-2deg); filter: drop-shadow(0 0 12px var(--gold)) brightness(1.1); }
+  100% { transform: translateY(0) scale(1) rotate(0deg);     filter: drop-shadow(0 0 0 transparent) brightness(1); }
+}
+@keyframes joker-trigger-aura {
+  0%   { transform: scale(0.6); opacity: 0; }
+  30%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ========== (c) 稀有度抽卡光效（v1.5.6 精修：rare / legendary 独立语言） ========== */
+.joker-card.rarity-rare,
+.joker-card.rarity-legendary {
+  position: relative;
+}
+/* 共用横扫底座：::before 是主扫光层，所有 rare/legendary 都用 */
+.joker-card.rarity-rare::before,
+.joker-card.rarity-legendary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: inherit;
+  transform: translateX(-100%);
+}
+
+/* rare：单道粉白光，1.0s */
+.joker-card.rarity-rare::before {
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(255, 200, 220, 0.55) 45%,
+    rgba(255, 255, 255, 0.92) 50%,
+    rgba(255, 200, 220, 0.55) 55%,
+    transparent 72%
+  );
+}
+.joker-card.rarity-rare.shimmering::before {
+  animation: rarity-shimmer-rare 1.0s ease-out;
+}
+
+/* legendary 主扫光 ::before：金光，0~70% 完成 */
+.joker-card.rarity-legendary::before {
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(255, 220, 130, 0.6) 45%,
+    rgba(255, 245, 200, 0.95) 50%,
+    rgba(255, 220, 130, 0.6) 55%,
+    transparent 72%
+  );
+}
+.joker-card.rarity-legendary.shimmering::before {
+  animation: rarity-shimmer-legendary-front 1.5s ease-out;
+}
+
+/* legendary 副扫光 ::after：紫光，30~100% 完成（与主扫光相位错开 0.3s） */
+.joker-card.rarity-legendary.shimmering::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 28%,
+    rgba(190, 140, 255, 0.55) 45%,
+    rgba(220, 200, 255, 0.85) 50%,
+    rgba(190, 140, 255, 0.55) 55%,
+    transparent 72%
+  );
+  transform: translateX(-100%);
+  animation: rarity-shimmer-legendary-back 1.5s ease-out 0.3s;
+}
+
+@keyframes rarity-shimmer-rare {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes rarity-shimmer-legendary-front {
+  0%   { transform: translateX(-100%); }
+  70%  { transform: translateX(60%); opacity: 0.9; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+@keyframes rarity-shimmer-legendary-back {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* ========== (d) 牌型大字 banner（炸裂金光版） ========== */
+.hand-type-banner {
+  position: fixed;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', 'Georgia', monospace;
+  font-size: 64px;
+  font-weight: 900;
+  color: #4dd6ff;
+  text-shadow:
+    -3px 0 0 #0d2060,
+    3px 0 0 #0d2060,
+    0 -3px 0 #0d2060,
+    0 3px 0 #0d2060,
+    0 6px 0 #050818,
+    0 0 28px rgba(77,214,255,0.9),
+    0 0 56px rgba(33,150,243,0.7);
+  pointer-events: none;
+  z-index: 150;
+  letter-spacing: 4px;
+  white-space: nowrap;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+}
+.hand-type-pop-enter-active {
+  animation: hand-type-pop 0.7s cubic-bezier(0.34, 1.8, 0.64, 1);
+}
+.hand-type-pop-leave-active {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.hand-type-pop-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+@keyframes hand-type-pop {
+  0%   { transform: translate(-50%, -50%) scale(0.3) rotate(-8deg); opacity: 0; }
+  40%  { transform: translate(-50%, -50%) scale(1.4) rotate(3deg);  opacity: 1; }
+  70%  { transform: translate(-50%, -50%) scale(0.95) rotate(-1deg); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg);   opacity: 1; }
+}
+
+/* ========== (e) 得分飘字（+score 弹出） ========== */
+.score-float {
+  position: fixed;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 48px;
+  font-weight: 900;
+  color: #ffd166;
+  text-shadow:
+    -2px 0 0 #2a1c33,
+    2px 0 0 #2a1c33,
+    0 -2px 0 #2a1c33,
+    0 2px 0 #2a1c33,
+    0 4px 0 #6b3fa0,
+    0 0 24px rgba(255,209,102,0.9);
+  pointer-events: none;
+  z-index: 149;
+  letter-spacing: 3px;
+}
+.score-float-enter-active {
+  animation: score-float-in 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.score-float-leave-active {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.score-float-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -110%) scale(1.05);
+}
+@keyframes score-float-in {
+  0%   { transform: translate(-50%, -30%) scale(0.4); opacity: 0; }
+  35%  { transform: translate(-50%, -55%) scale(1.25); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* ========== (f) 桌面 impact 闪光 ========== */
+.play-table.impact {
+  animation: play-table-impact 0.45s ease-out;
+}
+@keyframes play-table-impact {
+  0%   { box-shadow: 0 0 0 0 rgba(255,209,102,0); transform: scale(1); }
+  20%  { box-shadow: 0 0 32px 8px rgba(255,209,102,0.55); transform: scale(1.012); }
+  60%  { box-shadow: 0 0 18px 2px rgba(255,209,102,0.25); transform: scale(0.998); }
+  100% { box-shadow: 0 0 0 0 rgba(255,209,102,0); transform: scale(1); }
+}
+
+/* ========== (g) 全屏 screen-shake ========== */
+.screen-shake {
+  animation: screen-shake 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes screen-shake {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-4px, 2px); }
+  20%  { transform: translate(5px, -3px); }
+  30%  { transform: translate(-6px, 4px); }
+  40%  { transform: translate(4px, -2px); }
+  50%  { transform: translate(-3px, 3px); }
+  60%  { transform: translate(2px, -2px); }
+  70%  { transform: translate(-2px, 1px); }
+  80%  { transform: translate(1px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ========== (h) 粒子样式（v1.5.6：boss 击败三层粒子 + 圆环 + 屏闪） ========== */
+.particle-burst {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  z-index: 200;
+}
+.particle {
+  position: absolute;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 8px rgba(255,209,102,0.8));
+}
+.particle.tier-inner  { font-size: 30px; }
+.particle.tier-mid    { font-size: 26px; }
+.particle.tier-outer  { font-size: 22px; }
+
+.joker-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 160;
+  font-size: 22px;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0 6px rgba(255,209,102,0.9));
+}
+
+/* 爆炸圆环：屏幕中心，0→260px 半径，0.4s 扩散 */
+.boss-ring {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 230, 150, 0.95);
+  box-shadow:
+    0 0 24px 6px rgba(255, 209, 102, 0.85),
+    inset 0 0 18px rgba(255, 245, 220, 0.6);
+  pointer-events: none;
+  z-index: 199;
+  transform: translate(-50%, -50%) scale(1);
+  animation: boss-ring-expand 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes boss-ring-expand {
+  0%   { transform: translate(-50%, -50%) scale(1);  opacity: 1; border-width: 4px; }
+  60%  { transform: translate(-50%, -50%) scale(48); opacity: 0.6; border-width: 2px; }
+  100% { transform: translate(-50%, -50%) scale(64); opacity: 0; border-width: 1px; }
+}
+
+/* 屏幕闪光：满屏白光 0.15s 过曝 */
+.boss-flash {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.85) 0%, rgba(255,240,180,0.35) 40%, transparent 80%);
+  pointer-events: none;
+  z-index: 198;
+  opacity: 0;
+  animation: boss-flash-pulse 0.4s ease-out forwards;
+}
+@keyframes boss-flash-pulse {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ========== (j) HUD 接收脉冲（飘字飞达时触发） ========== */
+.hud-score-col.receiving {
+  animation: hud-receive 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes hud-receive {
+  0%   { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+  35%  { transform: scale(1.18); filter: drop-shadow(0 0 18px var(--gold)) brightness(1.3); }
+  70%  { transform: scale(1.04); filter: drop-shadow(0 0 8px var(--gold)) brightness(1.1); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0 transparent); }
+}
+
+/* ========== (k) final 公式爆炸（chips × mult = score） ========== */
+.final-formula {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Press Start 2P', monospace;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 155;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 16px;
+  white-space: nowrap;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.7));
+}
+.final-formula .ff-chips {
+  color: var(--chips);
+  font-size: 56px;
+  text-shadow:
+    -2px 0 0 #2a1c33, 2px 0 0 #2a1c33,
+    0 -2px 0 #2a1c33, 0 2px 0 #2a1c33,
+    0 0 22px rgba(90,200,250,0.9);
+}
+.final-formula .ff-mult {
+  color: var(--mult);
+  font-size: 56px;
+  text-shadow:
+    -2px 0 0 #2a1c33, 2px 0 0 #2a1c33,
+    0 -2px 0 #2a1c33, 0 2px 0 #2a1c33,
+    0 0 22px rgba(255,94,126,0.9);
+}
+.final-formula .ff-op {
+  color: var(--text-dim);
+  font-size: 40px;
+}
+.final-formula .ff-score {
+  color: var(--gold);
+  font-size: 76px;
+  letter-spacing: 2px;
+  text-shadow:
+    -3px 0 0 #0d2060, 3px 0 0 #0d2060,
+    0 -3px 0 #0d2060, 0 3px 0 #0d2060,
+    0 6px 0 #050818,
+    0 0 28px rgba(255,200,87,0.9),
+    0 0 48px rgba(255,150,40,0.7);
+}
+.final-formula-enter-active {
+  animation: final-formula-pop 0.6s cubic-bezier(0.34, 1.8, 0.64, 1);
+}
+.final-formula-leave-active {
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+.final-formula-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+@keyframes final-formula-pop {
+  0%   { transform: translate(-50%, -50%) scale(0.4); opacity: 0; }
+  45%  { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+  75%  { transform: translate(-50%, -50%) scale(0.96); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* ========== (i) prefers-reduced-motion 总开关 ========== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

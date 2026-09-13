@@ -1,0 +1,501 @@
+/* v0.3 — iPhone hand-feel pass
+   Loaded after legacy responsive CSS. This pass focuses on portrait touch ergonomics
+   without changing scoring, shop logic, RNG, or save semantics. */
+
+:root {
+  --tap-size: 48px;
+  --phone-gutter: 12px;
+  --phone-radius: 14px;
+  --phone-bottom-safe: max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+html,
+body,
+#app,
+.balatro-shell {
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+[role="button"],
+.playing-card,
+.joker-card,
+.shop-item-card {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Global press feedback installed by mobileTouch.js. */
+.is-touch-pressed {
+  transform: translateY(1px) scale(.985) !important;
+  filter: brightness(.94);
+}
+
+button:disabled.is-touch-pressed,
+.disabled.is-touch-pressed {
+  transform: none !important;
+  filter: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  button:not(:disabled):active,
+  [role="button"]:active {
+    transform: translateY(1px) scale(.985);
+  }
+}
+
+@media (max-width: 767px) {
+  .phase-panel {
+    padding-top: max(var(--phone-gutter), env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(var(--phone-gutter), env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: var(--phone-bottom-safe) !important;
+    padding-left: max(var(--phone-gutter), env(safe-area-inset-left, 0px)) !important;
+    scrollbar-width: none;
+  }
+
+  .phase-panel::-webkit-scrollbar,
+  .shop-items::-webkit-scrollbar,
+  .shop-owned-row::-webkit-scrollbar,
+  .joker-bar-row::-webkit-scrollbar,
+  .sb::-webkit-scrollbar {
+    display: none;
+  }
+
+  button,
+  [role="button"] {
+    min-height: var(--tap-size);
+  }
+
+  .hud-icon-btn.settings-trigger {
+    width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    top: max(8px, env(safe-area-inset-top, 0px)) !important;
+    right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    border-radius: 13px;
+  }
+
+  /* ---------- Setup / home ---------- */
+  .setup-screen {
+    min-height: 100%;
+    justify-content: center;
+  }
+
+  .setup-hero {
+    width: min(100%, 560px);
+    margin-inline: auto;
+  }
+
+  .setup-options,
+  .setup-options-row,
+  .setup-ai-row {
+    width: 100%;
+  }
+
+  .setup-options button,
+  .setup-options-row button,
+  .setup-ai-row button {
+    min-height: 52px;
+    font-size: clamp(13px, 3.6vw, 16px);
+    border-radius: 12px;
+  }
+
+  .save-hint {
+    font-size: 12px !important;
+    line-height: 1.5;
+  }
+
+  /* ---------- Blind select ---------- */
+  .blind-select-screen {
+    gap: 12px;
+  }
+
+  .blind-select-cards {
+    gap: 10px !important;
+    padding-bottom: 6px;
+  }
+
+  .blind-card {
+    width: min(100%, 340px) !important;
+    min-height: 0 !important;
+  }
+
+  /* ---------- Shop ---------- */
+  .shop-screen {
+    gap: 10px !important;
+  }
+
+  .shop-top {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    gap: 10px;
+    padding: 2px 52px 8px 0;
+    background: linear-gradient(to bottom, var(--bg-deep, #0a1438) 70%, transparent);
+  }
+
+  .shop-title {
+    font-size: clamp(20px, 6vw, 26px) !important;
+  }
+
+  .shop-top-right {
+    gap: 8px !important;
+  }
+
+  .shop-section-label {
+    margin: 4px 0 8px !important;
+    line-height: 1.35;
+  }
+
+  .shop-for-sale {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .shop-items {
+    display: flex !important;
+    gap: 12px !important;
+    margin-inline: calc(-1 * var(--phone-gutter));
+    padding: 2px var(--phone-gutter) 10px !important;
+    scroll-padding-inline: var(--phone-gutter);
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shop-item-card {
+    flex: 0 0 min(78vw, 300px) !important;
+    width: min(78vw, 300px) !important;
+    min-width: 240px;
+    padding: 14px 12px 12px !important;
+    gap: 10px !important;
+    border-radius: 16px !important;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .shop-item-bottom {
+    gap: 10px !important;
+  }
+
+  .shop-item-bottom button {
+    min-width: 92px;
+  }
+
+  .shop-owned {
+    flex: 0 0 auto;
+  }
+
+  .shop-owned-row,
+  .joker-bar-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 8px !important;
+    padding: 2px 2px 7px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shop-owned-row > *,
+  .joker-bar-row > * {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .shop-screen > .bottom-bar {
+    position: sticky !important;
+    bottom: 0;
+    z-index: 30;
+    display: grid !important;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 10px !important;
+    padding: 10px 0 var(--phone-bottom-safe) !important;
+    background: linear-gradient(to top, var(--bg-deep, #0a1438) 74%, rgba(10,20,56,.84) 88%, transparent);
+  }
+
+  .shop-screen > .bottom-bar button {
+    min-height: 50px !important;
+  }
+
+  /* ---------- Battle ---------- */
+  .battle-screen {
+    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .sb {
+    flex: 0 0 auto;
+    width: 100% !important;
+    max-width: 100%;
+    padding: 5px 8px !important;
+    gap: 6px !important;
+    white-space: nowrap;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sb > * {
+    scroll-snap-align: start;
+  }
+
+  .battle-main {
+    min-height: 0;
+    gap: 6px !important;
+    padding: 6px 8px var(--phone-bottom-safe) !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .joker-bar {
+    flex: 0 0 auto;
+    padding: 6px 8px 7px !important;
+    gap: 4px !important;
+    border-radius: 10px !important;
+  }
+
+  .joker-bar-label {
+    font-size: 7px !important;
+    line-height: 1.2;
+  }
+
+  .play-table {
+    flex: 0 1 auto !important;
+    min-height: 92px !important;
+    max-height: 20vh;
+    border-radius: 12px !important;
+  }
+
+  .play-table-idle,
+  .play-table-preview,
+  .play-table-scored {
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+
+  .play-table-placeholder {
+    font-size: 11px !important;
+  }
+
+  .formula-row {
+    gap: 8px !important;
+  }
+
+  .formula-row .formula-chips,
+  .formula-row .formula-mult,
+  .formula-row .formula-score {
+    font-size: clamp(18px, 5vw, 24px) !important;
+  }
+
+  .hand-area {
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+
+  .hand-area-header {
+    gap: 8px;
+    margin-bottom: 0 !important;
+  }
+
+  .hand-area-label {
+    font-size: 10px !important;
+    line-height: 1.35;
+  }
+
+  .hand-area-sorts {
+    gap: 4px !important;
+  }
+
+  .hand-area-sorts .btn-sort {
+    min-height: 36px !important;
+    padding: 6px 8px !important;
+    font-size: 9px !important;
+  }
+
+  /* Keep full-size touchable cards instead of shrinking the whole hand to 55%.
+     The stronger overlap keeps 8 cards inside an iPhone portrait viewport. */
+  .hand-fan {
+    transform: none !important;
+    transform-origin: initial !important;
+    min-height: 122px !important;
+    max-width: 100%;
+    padding: 16px 2px 5px !important;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .hand-fan .hand-card {
+    flex: 0 0 auto;
+  }
+
+  .hand-fan .hand-card:not(:first-child) {
+    margin-left: -36px !important;
+  }
+
+  .bottom-bar.battle-btns {
+    position: sticky !important;
+    bottom: 0;
+    z-index: 40;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    gap: 8px !important;
+    width: 100%;
+    padding: 8px 0 var(--phone-bottom-safe) !important;
+    background: linear-gradient(to top, var(--bg-deep, #0a1438) 76%, rgba(10,20,56,.86) 88%, transparent);
+  }
+
+  .battle-btn-play,
+  .battle-btn-discard {
+    min-width: 0 !important;
+    min-height: 50px !important;
+    padding: 9px 10px !important;
+    font-size: 11px !important;
+  }
+
+  /* Sorting is already available directly above the hand; remove duplicate bottom buttons. */
+  .bottom-bar.battle-btns .battle-btn-sort {
+    display: none !important;
+  }
+
+  .bottom-bar.battle-btns .deck-pile {
+    min-width: 48px;
+    justify-self: end;
+  }
+
+  /* ---------- Modals / settings ---------- */
+  .modal-overlay,
+  .settings-overlay {
+    padding-top: max(10px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(10px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(10px, env(safe-area-inset-left, 0px)) !important;
+  }
+
+  .settings-panel,
+  .settings-panel-wide {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px) !important;
+    border-radius: 16px !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .settings-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none;
+  }
+
+  .settings-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-tab,
+  .settings-close,
+  .settings-toggle,
+  .settings-test-btn,
+  .prompt-scene-tab,
+  .prompt-reset-btn {
+    min-height: 44px !important;
+  }
+
+  .settings-row,
+  .settings-row-toggle,
+  .settings-row-action {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .prompt-scene-tabs {
+    overflow-x: auto;
+  }
+
+  .prompt-scene-tab {
+    flex: 0 0 auto !important;
+    min-width: 94px;
+  }
+
+  .prompt-textarea {
+    min-height: 220px !important;
+    max-height: 42vh !important;
+    font-size: 12px !important;
+  }
+
+  .info-modal {
+    width: min(100%, 520px) !important;
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Avoid iOS accidental callout / selection while rapidly playing cards. */
+  .playing-card,
+  .joker-card,
+  .deck-pile {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Very narrow iPhones (SE-class). */
+@media (max-width: 380px) {
+  :root {
+    --phone-gutter: 9px;
+  }
+
+  .hand-fan .hand-card:not(:first-child) {
+    margin-left: -39px !important;
+  }
+
+  .shop-item-card {
+    flex-basis: 82vw !important;
+    width: 82vw !important;
+    min-width: 226px;
+  }
+
+  .battle-btn-play,
+  .battle-btn-discard {
+    font-size: 10px !important;
+    padding-inline: 7px !important;
+  }
+}
+
+/* Short-screen phones: keep primary controls above the home indicator. */
+@media (max-width: 767px) and (max-height: 680px) {
+  .play-table {
+    min-height: 72px !important;
+    max-height: 16vh;
+  }
+
+  .hand-fan {
+    min-height: 108px !important;
+    padding-top: 10px !important;
+  }
+
+  .joker-bar {
+    padding-block: 4px !important;
+  }
+
+  .shop-screen {
+    gap: 6px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-touch-pressed {
+    transform: none !important;
+    filter: none;
+  }
+}

@@ -1,0 +1,11 @@
+v0.4.0 iOS Ready
+
+- 将项目版本统一为 0.4.0。
+- 为私人 iOS 安装生成稳定且高概率唯一的 Bundle Identifier：com.private.jokerpoker.p71ee2bac
+- 保持核心游戏、自动存档、离线资源和手机触控逻辑不变。
+- 将 iOS 源图标准备为 1024×1024。
+- 加入 Mac 一键准备 iOS 工程脚本。
+- 加入一键打开 Xcode / Tauri iOS 开发脚本。
+- 加入 Release iOS 构建脚本。
+- 加入面向零编程经验用户的中文安装说明。
+- Windows 测试启动方式继续保留。

@@ -1,0 +1,41 @@
+私人小丑牌 v0.4 - iPhone 单机安装说明
+
+目标：
+这是给你自己玩的 iPhone 单机版本准备包。
+游戏本体、图片、音乐、计分和存档都在手机本地运行。
+正常游玩不需要 GPT，也不需要电脑上的黑色网页服务器。
+
+当前私人 App 标识：
+com.private.jokerpoker.p71ee2bac
+
+你现在在 Windows 上：
+继续用 RUN_GAME_Windows.bat 试玩即可。
+Windows 不能完成最后的 iPhone 原生签名和安装。
+
+真正安装到 iPhone 时，需要：
+1. 一台 Mac
+2. Xcode
+3. 你的 Apple ID
+4. 一台 iPhone
+5. 第一次准备时需要联网下载开发组件
+
+到 Mac 后，你只按这个顺序：
+第一步：把整个项目文件夹复制到 Mac。
+第二步：安装并打开一次 Xcode。
+第三步：双击 1_准备iOS工程.command。
+第四步：准备成功后双击 2_打开iOS工程.command。
+第五步：用数据线连接 iPhone。
+第六步：在 Xcode 的 Signing & Capabilities 中选择你的 Apple ID / Team。
+第七步：Xcode 顶部选择你的 iPhone，点击 Run（三角形）。
+第八步：如果 iPhone 要求信任开发者/开启开发者模式，按手机提示完成。
+第九步：游戏会像普通 App 一样出现在 iPhone 桌面。
+
+说明：
+- 免费 Apple ID 通常可以用于自己的真机开发测试，但签名有时效，可能需要以后重新连接 Mac 再签一次。
+- Apple Developer 付费账号用于长期签名和发布会更方便，但你只是自己玩，不要求现在购买。
+- 真正 iOS 构建必须经过 macOS/Xcode，这是苹果工具链限制，不是这个项目本身的问题。
+- 如果 Xcode 出现任何错误，不要自己乱改。截图给 ChatGPT，继续由 ChatGPT 处理。
+
+重要：
+这个版本仍保留 Windows 测试方式。
+不要删除 src-tauri、package.json、package-lock.json、src 或 public 文件夹。

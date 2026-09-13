@@ -1,0 +1,38 @@
+/* 全局样式 — 蓝色水纹主题 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* 蓝色水纹主调 */
+  --bg:       #0a1438;
+  --bg-2:     #111e44;
+  --panel:    #1e3068;
+  --panel-2:  #152050;
+  --panel-3:  #0f1840;
+  --line:     #3a5ab8;
+  --text:     #ffffff;
+  --text-dim: #c9d2e8;
+  --muted:    #8a9bbf;
+  --gold:     #ffc857;
+  --money:    #ffb030;
+  --red:      #ff5566;
+  --blue:     #4dd6ff;
+  --green:    #62d18b;
+  --purple:   #8a7bff;
+  --chips:    #4dd6ff;
+  --mult:     #ff8844;
+  --shadow:   0 12px 24px rgba(0,0,0,.5), 0 2px 0 rgba(255,255,255,.04) inset;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+}

@@ -1,0 +1,6 @@
+v0.1.1
+- 修复 Windows 启动器 UTF-8 BOM 导致的 @echo 错误。
+- 首次启动时自动检测 Node.js。
+- 若缺少 Node.js，优先使用 Windows winget 自动安装 Node.js LTS。
+- 首次运行自动安装 npm 依赖。
+- 自动启动本地游戏并打开浏览器。

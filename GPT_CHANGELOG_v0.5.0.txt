@@ -1,0 +1,11 @@
+v0.5.0 PWA 单机版
+
+- 加入标准 Web App Manifest。
+- 加入 iPhone Apple Touch Icon、192/512 PWA 图标和 maskable 图标。
+- 加入生产环境 Service Worker。
+- 每次构建自动预缓存整个 dist 游戏资源，确保核心玩法可离线。
+- 加入 iPhone Safari “添加到主屏幕”提示。
+- 请求浏览器持久化存储（支持时启用）。
+- 修复 GitHub Pages 子路径下 favicon/manifest/资源基础路径。
+- GitHub Pages 工作流自动使用当前仓库名，无需手工改 /balatro-game/。
+- 保留自动存档、备份恢复、手机触摸、安全区和 Windows 试玩方式。
