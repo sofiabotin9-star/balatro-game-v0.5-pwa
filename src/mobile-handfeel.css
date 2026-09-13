@@ -499,3 +499,327 @@ button:disabled.is-touch-pressed,
     filter: none;
   }
 }
+
+
+/* =========================================================
+   v0.5.1 — iPhone portrait hand visibility + landscape mode
+   ========================================================= */
+
+/* 手牌最重要的规则：绝不再靠“超强重叠”硬塞进屏幕。
+   空间不够时允许水平滑动，因此第一张和最后一张都能完整看到。 */
+@media (max-width: 767px) {
+  .hand-fan {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    padding-top: 34px !important;
+    padding-right: max(14px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: 8px !important;
+    padding-left: max(14px, env(safe-area-inset-left, 0px)) !important;
+    scroll-padding-inline: 14px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+  }
+
+  .hand-fan::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hand-fan .hand-card {
+    scroll-snap-align: center;
+    flex: 0 0 auto !important;
+  }
+
+  /* 轻微重叠保留“扇牌”感觉，但不会再把整副手牌挤出屏幕。 */
+  .hand-fan .hand-card:not(:first-child) {
+    margin-left: -20px !important;
+  }
+
+  /* 第一张/最后一张留出真实可见边界。 */
+  .hand-fan .hand-card:first-child {
+    margin-left: 0 !important;
+  }
+
+  .hand-fan .hand-card:last-child {
+    margin-right: 14px !important;
+  }
+}
+
+/* 极窄屏也优先保证可滚动和完整可见，而不是继续增加重叠。 */
+@media (max-width: 380px) {
+  .hand-fan .hand-card:not(:first-child) {
+    margin-left: -24px !important;
+  }
+}
+
+/* iPhone / 触屏设备横屏：正式支持，而不是盖住游戏。 */
+@media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
+  html,
+  body,
+  #app,
+  .balatro-shell {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+  }
+
+  .phase-panel {
+    min-height: 100dvh !important;
+    height: 100dvh !important;
+    box-sizing: border-box;
+    padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    overflow-y: auto !important;
+  }
+
+  /* 战斗采用真正的横屏布局：信息在左，牌桌与手牌在右。 */
+  .battle-screen {
+    flex-direction: row !important;
+    width: 100%;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .sb {
+    width: 190px !important;
+    min-width: 190px !important;
+    max-width: 190px !important;
+    height: 100% !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    padding-top: max(5px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: 6px !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(8px, env(safe-area-inset-left, 0px)) !important;
+    border-right: 2px solid rgba(74,107,255,.4) !important;
+    border-bottom: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    white-space: normal !important;
+    scrollbar-width: none;
+  }
+
+  .sb::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sb-panel {
+    padding: 5px 7px !important;
+  }
+
+  .sb-blind-header {
+    margin-bottom: 3px !important;
+    gap: 5px !important;
+  }
+
+  .sb-blind-badge {
+    font-size: 17px !important;
+  }
+
+  .sb-blind-name {
+    font-size: 11px !important;
+  }
+
+  .sb-inset {
+    padding: 4px 6px !important;
+  }
+
+  .sb-inset-big {
+    font-size: 20px !important;
+  }
+
+  .battle-main {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    gap: 4px !important;
+    padding-top: max(4px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(5px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: 8px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+  }
+
+  .joker-bar {
+    flex: 0 0 auto !important;
+    padding: 4px 6px !important;
+    gap: 3px !important;
+    border-radius: 8px !important;
+  }
+
+  .joker-bar-label {
+    font-size: 6px !important;
+  }
+
+  .joker-bar-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 6px !important;
+    scrollbar-width: none;
+  }
+
+  .joker-bar-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .play-type-float {
+    font-size: 10px !important;
+    padding: 1px 0 !important;
+  }
+
+  .play-table {
+    flex: 0 1 82px !important;
+    min-height: 58px !important;
+    max-height: 82px !important;
+    border-radius: 10px !important;
+  }
+
+  .play-table-idle,
+  .play-table-preview,
+  .play-table-scored {
+    padding: 5px !important;
+    gap: 3px !important;
+  }
+
+  .play-table-placeholder {
+    font-size: 9px !important;
+  }
+
+  .formula-row .formula-chips,
+  .formula-row .formula-mult,
+  .formula-row .formula-score {
+    font-size: 18px !important;
+  }
+
+  .hand-area {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .hand-area-header {
+    margin-bottom: 0 !important;
+    gap: 6px !important;
+  }
+
+  .hand-area-label {
+    font-size: 9px !important;
+  }
+
+  .hand-area-sorts {
+    gap: 4px !important;
+  }
+
+  .hand-area-sorts .btn-sort {
+    min-height: 32px !important;
+    padding: 4px 7px !important;
+    font-size: 8px !important;
+  }
+
+  .hand-fan {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 118px !important;
+    justify-content: flex-start !important;
+    align-items: flex-end !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    padding-top: 28px !important;
+    padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: 5px !important;
+    padding-left: 12px !important;
+    scroll-padding-inline: 12px;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+  }
+
+  .hand-fan::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hand-fan .hand-card {
+    flex: 0 0 auto !important;
+    scroll-snap-align: center;
+  }
+
+  /* 横屏更宽，只需要很轻的叠牌。 */
+  .hand-fan .hand-card:not(:first-child) {
+    margin-left: -8px !important;
+  }
+
+  .hand-fan .hand-card:first-child {
+    margin-left: 0 !important;
+  }
+
+  .hand-fan .hand-card:last-child {
+    margin-right: 12px !important;
+  }
+
+  .bottom-bar.battle-btns {
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 40;
+    display: grid !important;
+    grid-template-columns: minmax(120px, 1fr) minmax(120px, 1fr) auto !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 4px 0 max(5px, env(safe-area-inset-bottom, 0px)) !important;
+    background: linear-gradient(to top, var(--bg-deep, #0a1438) 74%, rgba(10,20,56,.86) 88%, transparent);
+  }
+
+  .battle-btn-play,
+  .battle-btn-discard {
+    min-height: 42px !important;
+    padding: 7px 9px !important;
+    font-size: 10px !important;
+  }
+
+  .bottom-bar.battle-btns .battle-btn-sort {
+    display: none !important;
+  }
+
+  .bottom-bar.battle-btns .deck-pile {
+    min-width: 46px;
+  }
+
+  /* 商店、盲注选择、设置等横屏时允许纵向滚动，避免内容被短屏截掉。 */
+  .shop-screen,
+  .blind-select-screen,
+  .setup-screen,
+  .reward-screen,
+  .gameover-screen {
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .shop-items {
+    grid-template-columns: repeat(3, minmax(180px, 1fr)) !important;
+  }
+
+  .modal-overlay,
+  .settings-overlay {
+    padding-top: max(6px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(8px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(8px, env(safe-area-inset-left, 0px)) !important;
+  }
+}
