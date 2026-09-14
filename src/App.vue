@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
-import { vFitHand } from './utils/fit-hand.js'
 
 const BASE_URL = import.meta.env.BASE_URL
 import { createDeck, identifyHand } from './utils/poker.js'
@@ -1449,8 +1448,6 @@ async function playHand() {
 
     const rect = sourceEl.getBoundingClientRect()
     const clone = sourceEl.cloneNode(true)
-    const sourceStyle = getComputedStyle(sourceEl)
-    clone.style.setProperty('--hand-card-width', sourceStyle.getPropertyValue('--hand-card-width'))
     // 副本必须去掉 .selected：scoped CSS .playing-card.selected 自带
     // transform: translateY(-22px)，会和 GSAP 的 inline transform 冲突跳变
     clone.classList.remove('selected')
@@ -1467,11 +1464,6 @@ async function playHand() {
       transform: none;
     `
     document.body.appendChild(clone)
-    // Preserve the responsive face typography outside the layout's CSS scope.
-    for (const selector of ['.rank', '.suit', '.center-suit']) {
-      const original = sourceEl.querySelector(selector)
-      clone.querySelectorAll(selector).forEach(node => { node.style.fontSize = getComputedStyle(original).fontSize })
-    }
     cloneByCardId.set(card.id, clone)
 
     sourceEl.style.visibility = 'hidden'
@@ -1481,9 +1473,9 @@ async function playHand() {
   const targetEl = playTableRef.value
   if (targetEl) {
     const dst = targetEl.getBoundingClientRect()
-    const gap = Math.min(8, dst.width * .02)
-    const cardWidth = Math.max(1, Math.min(88, (dst.height - 26) / 1.4, (dst.width - 20 - (orderedSelected.length - 1) * gap) / orderedSelected.length))
-    const cardHeight = cardWidth * 1.4
+    const cardWidth = 88
+    const cardHeight = 124
+    const gap = 14
     const totalWidth = orderedSelected.length * cardWidth + Math.max(0, orderedSelected.length - 1) * gap
     const startLeft = dst.left + dst.width / 2 - totalWidth / 2
     const targetTop = dst.top + dst.height / 2 - cardHeight / 2
@@ -1498,8 +1490,7 @@ async function playHand() {
       gsap.to(clone, {
         x: dx,
         y: dy,
-        scale: cardWidth / cloneRect.width,
-        transformOrigin: 'top left',
+        scale: 1.05,
         duration: 0.5,
         ease: 'power2.out',
         delay: orderIdx * 0.04
@@ -1887,13 +1878,48 @@ function buyJoker(joker) {
 }
 
 function sellJoker(joker) {
-  // v3.1.0 A4：卖出后清空 AI 建议高亮
+  // v0.5.2：商店展示使用 ownedJokersWithIds（它会创建 joker 的副本），
+  // 因此不能再用对象引用 item !== joker 来删除，否则金币会增加但卡牌不会消失。
+  // 优先根据 ownedJokerId（oj_0、oj_1 ...）定位当前库存中的精确槽位；
+  // 这样即使拥有两张同名/同 id 的 Joker，也只会卖掉用户点中的那一张。
   aiShopAdvice.value = null
-  const sellPrice = Math.floor(joker.price / 2)
+
+  let ownedIndex = -1
+  const match = typeof joker?.ownedJokerId === 'string'
+    ? /^oj_(\d+)$/.exec(joker.ownedJokerId)
+    : null
+
+  if (match) {
+    const candidateIndex = Number(match[1])
+    if (
+      Number.isInteger(candidateIndex) &&
+      candidateIndex >= 0 &&
+      candidateIndex < ownedJokers.value.length
+    ) {
+      ownedIndex = candidateIndex
+    }
+  }
+
+  // 兼容未来直接传入 ownedJokers 原对象的调用。
+  if (ownedIndex < 0) {
+    ownedIndex = ownedJokers.value.findIndex(item => item === joker)
+  }
+
+  // 找不到目标时绝不能先加钱，避免重复点击/异常调用刷金币。
+  if (ownedIndex < 0) {
+    showToastMessage('出售失败：没有找到这张小丑牌', 'error')
+    return
+  }
+
+  const soldJoker = ownedJokers.value[ownedIndex]
+  const sellPrice = Math.floor(soldJoker.price / 2)
+
+  // 先删除，再结算金币，保证库存与金币状态一致。
+  ownedJokers.value.splice(ownedIndex, 1)
   money.value += sellPrice
-  ownedJokers.value = ownedJokers.value.filter(item => item !== joker)
+
   audio.playSfx('shopSell')
-  showToastMessage(`出售了 ${joker.name}，获得 $${sellPrice}`, 'info')
+  showToastMessage(`出售了 ${soldJoker.name}，获得 $${sellPrice}`, 'info')
 }
 
 const confirmDialog = ref({
@@ -2075,10 +2101,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="balatro-shell responsive-game" :class="{ 'pilot-active': pilotVisible }">
+  <div class="balatro-shell" :class="{ 'pilot-active': pilotVisible }">
     <!-- 全局设置入口（任意 phase 可见） -->
     <button
-      v-if="!isBattlePhase"
       class="hud-icon-btn settings-trigger"
       data-no-sfx="true"
       aria-label="设置"
@@ -2342,10 +2367,6 @@ onBeforeUnmount(() => {
                     @longpress="showJokerDetail"
                   />
                 </div>
-                <div class="shop-item-summary">
-                  <strong>{{ joker.name }}</strong>
-                  <p>{{ joker.description }}</p>
-                </div>
                 <div class="shop-item-bottom">
                   <span class="shop-item-price">$ {{ joker.price }}</span>
                   <button
@@ -2366,8 +2387,8 @@ onBeforeUnmount(() => {
             <div class="shop-owned-row">
               <!-- v3.1.0 A4：接入商店建议高亮（sell），用 ownedJokersWithIds 提供稳定 ownedJokerId -->
               <JokerCard
-                v-for="(joker, idx) in ownedJokersWithIds"
-                :key="joker.id"
+                v-for="joker in ownedJokersWithIds"
+                :key="joker.ownedJokerId"
                 :joker="joker"
                 size="normal"
                 context="owned"
@@ -2452,7 +2473,7 @@ onBeforeUnmount(() => {
 
           <!-- 4.2 Round score -->
           <div class="sb-panel sb-round-score">
-            <div class="sb-panel-label">本回合得分</div>
+            <div class="sb-panel-label">Round score</div>
             <div class="sb-inset">
               <span class="sb-round-val"><ScoreCounter :value="totalScore" /></span>
             </div>
@@ -2551,8 +2572,8 @@ onBeforeUnmount(() => {
             <div class="joker-bar-label">JOKERS · {{ ownedJokers.length }}/{{ maxJokers }}</div>
             <div class="joker-bar-row">
               <JokerCard
-                v-for="joker in ownedJokers"
-                :key="joker.id"
+                v-for="(joker, idx) in ownedJokers"
+                :key="`${joker.id}-${idx}`"
                 :joker="joker"
                 size="normal"
                 context="owned"
@@ -2611,7 +2632,7 @@ onBeforeUnmount(() => {
                 <button @click="showHandInfo = true" class="btn-sort info">比赛信息</button>
               </div>
             </div>
-            <div class="hand-fan" v-fit-hand>
+            <div class="hand-fan">
               <PlayingCard
                 v-for="(card, index) in hand"
                 :ref="(el) => setHandCardRef(el, index)"
@@ -4891,4 +4912,3 @@ onBeforeUnmount(() => {
   box-shadow: 0 0 14px 3px rgba(227, 75, 111, .8);
 }
 </style>
-
