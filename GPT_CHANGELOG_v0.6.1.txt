@@ -1,0 +1,44 @@
+v0.6.1 — iPhone 12 visual polish
+
+Target viewports
+- Portrait: 390 x 844 CSS px
+- Landscape: 844 x 390 CSS px
+
+Changes
+1. Portrait battle
+- Joker size +~8%, still exactly five columns.
+- Hand cards +~5–7%, still exactly eight columns.
+- HUD / sort / action text increased for readability.
+- More height allocated to Joker and hand areas, reducing the empty play-table share.
+
+2. Portrait blind select
+- Card stack slightly shortened and vertically centered.
+- Internal information is clustered instead of spread top-to-bottom.
+- Blind icon, name, target score and reward enlarged.
+- Locked cards made more readable while remaining visually disabled.
+
+3. Portrait shop
+- Product Joker outer size unchanged.
+- Name and skill text enlarged.
+- Art/description geometry redistributed so the description gets more height.
+- Price and purchase button text strengthened.
+
+4. Landscape battle
+- Joker +~12% and hand cards +~14%.
+- Central empty play area reduced.
+- HUD and action text improved without widening the sidebar.
+
+5. Landscape shop
+- Outer card and two-column shop structure unchanged.
+- Name/skill text enlarged and description band given more room.
+
+6. Landscape blind select
+- Three-column structure unchanged.
+- Card field slightly shortened/centered; icon/name/score/reward made clearer.
+
+Hard constraints preserved
+- No page scrolling introduced.
+- 5 Joker slots remain one row.
+- Up to 8 hand cards remain fully visible.
+- Shop product count/layout and owned slots remain unchanged.
+- Blind layout remains 3 vertical cards in portrait / 3 columns in landscape.

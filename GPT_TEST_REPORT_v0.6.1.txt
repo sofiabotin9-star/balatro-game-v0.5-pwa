@@ -1,0 +1,41 @@
+v0.6.1 iPhone 12 visual polish — validation report
+
+Reference CSS viewports
+- Portrait: 390 x 844
+- Landscape: 844 x 390
+
+Automated Chromium layout harness checks
+1. Battle 390 x 844 — PASS
+   - document scrollWidth/scrollHeight: 390 / 844
+   - 5 Joker elements detected and inside viewport
+   - 8 hand-card elements detected and inside viewport
+   - battle main, Joker bar, play table, hand area and bottom controls inside viewport
+
+2. Battle 844 x 390 — PASS
+   - document scrollWidth/scrollHeight: 844 / 390
+   - 5 Joker elements detected and inside viewport
+   - 8 hand-card elements detected and inside viewport
+   - left HUD + right battle area remain inside viewport
+
+3. Blind select 390 x 844 — PASS
+   - no page overflow
+   - first and third blind cards fully inside viewport
+   - bottom controls fully inside viewport
+
+4. Blind select 844 x 390 — PASS
+   - no page overflow
+   - 3-column blind field stays inside viewport
+   - bottom controls fully inside viewport
+
+5. Shop 390 x 844 — PASS
+   - no page overflow
+   - top bar, sale section, owned section and bottom controls inside viewport
+
+6. Shop 844 x 390 — PASS
+   - no page overflow
+   - sale/owned two-column structure inside viewport
+   - bottom controls fully inside viewport
+
+Visual review performed after automated geometry checks.
+This pass deliberately keeps the v0.6.0 layout skeleton and changes only sizing, typography,
+internal spacing, and information density.
