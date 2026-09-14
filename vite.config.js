@@ -5,7 +5,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 
 const host = process.env.TAURI_DEV_HOST
-const base = process.env.VITE_BASE_PATH || './'
+const base = process.env.VITE_BASE_PATH || '/'
 
 function walkFiles(dir, root = dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
@@ -28,7 +28,7 @@ function makePwaPrecachePlugin() {
       const outDir = path.resolve(resolved.root, resolved.build.outDir)
       if (!fs.existsSync(outDir)) return
 
-      const files = walkFiles(outDir).filter(file => file !== 'sw.js' && !file.split('/').some(part => part.startsWith('.')))
+      const files = walkFiles(outDir).filter(file => file !== 'sw.js')
       const basePath = resolved.base.endsWith('/') ? resolved.base : `${resolved.base}/`
       const urls = files.map(file => `${basePath}${file}`)
 

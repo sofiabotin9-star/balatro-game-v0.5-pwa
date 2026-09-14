@@ -1,0 +1,3 @@
+Balatro v0.6.0 CLEAN NEW
+This package intentionally contains no GPT_CHANGELOG_v0.5.x files and no older mobile patch documents.
+Target: iPhone 12 CSS viewport 390x844 portrait / 844x390 landscape.

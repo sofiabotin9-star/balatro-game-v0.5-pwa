@@ -104,13 +104,7 @@ defineExpose({ cardRef })
 </script>
 
 <template>
-  <div :class="cardClasses" @click="emit('click', card)" ref="cardRef"
-    :role="selectable ? 'button' : undefined"
-    :tabindex="selectable ? 0 : undefined"
-    :aria-label="`${displayRank}${suitSymbol}`"
-    :aria-pressed="selectable ? selected : undefined"
-    @keydown.enter.prevent="selectable && emit('click', card)"
-    @keydown.space.prevent="selectable && emit('click', card)">
+  <div :class="cardClasses" @click="emit('click', card)" ref="cardRef">
     <div class="card-border"></div>
 
     <div class="card-bg">

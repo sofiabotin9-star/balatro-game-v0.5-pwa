@@ -1878,7 +1878,7 @@ function buyJoker(joker) {
 }
 
 function sellJoker(joker) {
-  // v0.5.2：商店展示使用 ownedJokersWithIds（它会创建 joker 的副本），
+  // 商店展示使用 ownedJokersWithIds（它会创建 joker 的副本），
   // 因此不能再用对象引用 item !== joker 来删除，否则金币会增加但卡牌不会消失。
   // 优先根据 ownedJokerId（oj_0、oj_1 ...）定位当前库存中的精确槽位；
   // 这样即使拥有两张同名/同 id 的 Joker，也只会卖掉用户点中的那一张。

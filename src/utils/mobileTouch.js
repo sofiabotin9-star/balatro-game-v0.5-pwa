@@ -1,4 +1,4 @@
-// v0.3 — lightweight touch ergonomics for the private mobile build.
+// Lightweight touch ergonomics for the private mobile build.
 // No game logic lives here. It only manages press feedback, viewport sizing,
 // and a safe vibration fallback on platforms that support navigator.vibrate.
 

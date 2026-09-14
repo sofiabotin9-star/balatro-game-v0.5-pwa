@@ -1,0 +1,18 @@
+v0.6.0 iPhone 12 布局重构（390×844 / 844×390）
+
+本版收口为单一手机布局层，不再依赖历史手机样式层。
+
+核心修复：
+- mobile-handfeel.css 改为唯一手机布局层。
+- main.js 不再加载旧 responsive.css / mobile-app.css 的手机规则，避免多套规则互相覆盖。
+- mobile-handfeel.css 放在 App / 组件样式之后加载，保证手机布局是最终生效规则。
+- iPhone 12 竖屏：390×844；横屏：844×390。
+- 对局页：5 个 Joker 同排；最多 8 张手牌完整显示；出牌/弃牌/牌堆完整显示。
+- 盲注页：3 个盲注全部位于一屏内，竖屏三行、横屏三列。
+- 商店页：3 张待售 Joker、5 个已拥有槽、刷新和下一回合全部位于一屏内。
+- 修复 size-shop Joker 只缩外框、内部名称/插画/描述仍按 220×304 桌面尺寸导致裁切的问题。
+- 统一 safe-area 与 100dvh/100vh fallback。
+
+验收基准：
+- 390×844 portrait：battle / blind / shop 核心交互全部可见，无横向滚动依赖。
+- 844×390 landscape：battle / blind / shop 核心交互全部可见，无横向滚动依赖。

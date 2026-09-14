@@ -63,7 +63,7 @@ const rarityLabel = computed(() => props.joker ? getRarityLabel(props.joker.rari
 const artType = computed(() => props.joker?.art || 'jimbo')
 
 // v1.8.0：优先使用 PNG 像素插画（public/assets/jokers/<id>.png），加载失败回退到 CSS 像素艺术
-const imageSrc = computed(() => props.joker ? `${import.meta.env.BASE_URL}assets/jokers/${props.joker.id}.png` : '')
+const imageSrc = computed(() => props.joker ? `/assets/jokers/${props.joker.id}.png` : '')
 const useImage = ref(true)
 function onImageError() { useImage.value = false }
 </script>
