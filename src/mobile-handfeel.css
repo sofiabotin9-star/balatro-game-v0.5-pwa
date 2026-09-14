@@ -1812,3 +1812,806 @@ button:disabled.is-touch-pressed,
   .battle-btn-discard { min-height: 36px !important; height: 36px !important; padding: 4px 7px !important; font-size: 8px !important; }
   .bottom-bar.battle-btns .deck-pile { min-width: 36px !important; transform: scale(.74); transform-origin: center; }
 }
+
+/* =========================================================
+   v0.5.4 — iPhone 12 exact-fit pass
+   Target CSS viewport: 390 x 844 portrait / 844 x 390 landscape.
+   Physical panel is 1170 x 2532 at DPR 3, but web layout uses CSS px.
+   Priority: ALL core gameplay UI visible at once; no half cards, no wrapped joker row.
+   ========================================================= */
+
+/* ---------- iPhone 12 portrait and close-size iPhones ---------- */
+@media (orientation: portrait) and (min-width: 381px) and (max-width: 430px) {
+  html,
+  body,
+  #app,
+  .balatro-shell {
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  /* Let phase-panel own safe-area. Avoid double safe-area padding from shell. */
+  .balatro-shell {
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+
+  .phase-panel {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    padding-top: max(4px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(6px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(6px, env(safe-area-inset-left, 0px)) !important;
+    overflow: hidden !important;
+  }
+
+  .hud-icon-btn.settings-trigger {
+    width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    top: max(5px, env(safe-area-inset-top, 0px)) !important;
+    right: max(5px, env(safe-area-inset-right, 0px)) !important;
+  }
+
+  /* ===== Battle ===== */
+  .battle-screen {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Compact top HUD to ~145px so the game board receives most of the screen. */
+  .battle-screen > .sb {
+    box-sizing: border-box !important;
+    flex: 0 0 145px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 145px !important;
+    max-height: 145px !important;
+    display: grid !important;
+    grid-template-columns: 1.35fr .82fr .82fr !important;
+    grid-template-rows: 56px 56px 23px !important;
+    grid-template-areas:
+      "blind round score"
+      "blind hands buttons"
+      "money ante ai" !important;
+    gap: 4px !important;
+    padding: 4px 45px 4px 4px !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+  }
+
+  .battle-screen .sb-panel,
+  .battle-screen .sb-hands-block {
+    min-width: 0 !important;
+    border-radius: 6px !important;
+  }
+
+  .battle-screen .sb-blind-panel { padding: 4px 5px !important; }
+  .battle-screen .sb-blind-header { gap: 3px !important; margin-bottom: 2px !important; }
+  .battle-screen .sb-blind-badge { font-size: 14px !important; }
+  .battle-screen .sb-blind-name { font-size: 8px !important; }
+  .battle-screen .sb-blind-type-tag { font-size: 6px !important; padding: 1px 3px !important; }
+  .battle-screen .sb-inset { padding: 2px 4px !important; gap: 0 !important; }
+  .battle-screen .sb-inset-label { font-size: 6px !important; }
+  .battle-screen .sb-inset-big { font-size: 17px !important; }
+  .battle-screen .sb-inset-sub { font-size: 6px !important; }
+  .battle-screen .sb-round-score,
+  .battle-screen .sb-hand-score { padding: 4px !important; }
+  .battle-screen .sb-panel-label { margin-bottom: 1px !important; font-size: 5.5px !important; }
+  .battle-screen .sb-round-val { font-size: 15px !important; }
+  .battle-screen .sb-progress-wrap { margin-top: 2px !important; }
+  .battle-screen .sb-progress-bar { height: 4px !important; }
+  .battle-screen .sb-hand-type-name { min-height: 6px !important; margin-bottom: 1px !important; font-size: 5.5px !important; }
+  .battle-screen .sb-score-row { gap: 2px !important; }
+  .battle-screen .sb-chips-block,
+  .battle-screen .sb-mult-block { padding: 4px 1px 3px !important; }
+  .battle-screen .sb-chips-val,
+  .battle-screen .sb-mult-val { font-size: 12px !important; }
+  .battle-screen .sb-score-unit { font-size: 5px !important; }
+  .battle-screen .sb-score-x { font-size: 7px !important; }
+  .battle-screen .sb-hands-row { gap: 3px !important; }
+  .battle-screen .sb-hands-block { padding: 3px !important; gap: 1px !important; }
+  .battle-screen .sb-hands-label { font-size: 6px !important; }
+  .battle-screen .sb-inset-sm { min-width: 25px !important; padding: 2px 4px !important; }
+  .battle-screen .sb-hands-val { font-size: 11px !important; }
+  .battle-screen .sb-btns { gap: 3px !important; }
+  .battle-screen .sb-btn { min-height: 0 !important; height: 26px !important; padding: 2px 3px !important; font-size: 6px !important; }
+  .battle-screen .sb-btn-orange { display: none !important; }
+  .battle-screen .sb-money-panel { padding: 1px 3px !important; gap: 2px !important; }
+  .battle-screen .sb-money-sign { font-size: 9px !important; }
+  .battle-screen .sb-money-val { font-size: 12px !important; }
+  .battle-screen .sb-ante-row { padding: 0 1px !important; gap: 2px !important; }
+  .battle-screen .sb-ante-label,
+  .battle-screen .sb-ante-sep { font-size: 6px !important; letter-spacing: 0 !important; }
+  .battle-screen .discard-mode-btn { min-height: 22px !important; width: 24px !important; height: 24px !important; padding: 0 !important; }
+
+  .battle-screen > .battle-main {
+    box-sizing: border-box !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    padding: 3px 4px max(3px, env(safe-area-inset-bottom, 0px)) !important;
+    overflow: hidden !important;
+  }
+
+  /* Force exactly five Joker slots into ONE row. */
+  .battle-screen .joker-bar {
+    box-sizing: border-box !important;
+    flex: 0 0 62px !important;
+    min-height: 62px !important;
+    max-height: 62px !important;
+    padding: 3px 4px !important;
+    gap: 1px !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen .joker-bar-label {
+    flex: 0 0 auto !important;
+    font-size: 5px !important;
+    line-height: 1 !important;
+  }
+
+  .battle-screen .joker-bar .joker-bar-row {
+    box-sizing: border-box !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen .joker-bar .joker-bar-row > .joker-card,
+  .battle-screen .joker-bar .joker-bar-row > .joker-card.empty {
+    box-sizing: border-box !important;
+    flex: 0 0 48px !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .battle-screen .joker-bar .empty-plus { font-size: 12px !important; }
+  .battle-screen .joker-bar .empty-label { font-size: 4px !important; letter-spacing: 0 !important; }
+
+  /* Play/type area uses only the remaining flexible space. */
+  .battle-screen .play-type-float {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    padding: 1px 0 !important;
+    font-size: 8px !important;
+  }
+
+  .battle-screen .play-table {
+    flex: 1 1 auto !important;
+    min-height: 54px !important;
+    max-height: none !important;
+    border-radius: 9px !important;
+  }
+
+  .battle-screen .play-table-idle,
+  .battle-screen .play-table-preview,
+  .battle-screen .play-table-scored {
+    padding: 4px !important;
+    gap: 2px !important;
+  }
+
+  .battle-screen .play-table-placeholder { font-size: 8px !important; }
+
+  /* Hand header + all 8 cards + action buttons must fit without scrolling. */
+  .battle-screen .hand-area {
+    box-sizing: border-box !important;
+    flex: 0 0 91px !important;
+    height: 91px !important;
+    min-height: 91px !important;
+    overflow: visible !important;
+  }
+
+  .battle-screen .hand-area-header {
+    box-sizing: border-box !important;
+    height: 27px !important;
+    min-height: 27px !important;
+    margin: 0 !important;
+    gap: 3px !important;
+  }
+
+  .battle-screen .hand-area-label {
+    min-width: 0 !important;
+    font-size: 7.5px !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .battle-screen .hand-area-sorts { gap: 2px !important; }
+  .battle-screen .hand-area-sorts .btn-sort {
+    min-height: 25px !important;
+    height: 25px !important;
+    padding: 2px 5px !important;
+    font-size: 7px !important;
+  }
+
+  .battle-screen .hand-fan {
+    box-sizing: border-box !important;
+    flex: 0 0 64px !important;
+    width: 100% !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    gap: 2px !important;
+    padding: 8px 0 1px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+    touch-action: manipulation !important;
+  }
+
+  .battle-screen .hand-fan > .hand-card.playing-card,
+  .battle-screen .hand-fan > .hand-card.playing-card.compact {
+    box-sizing: border-box !important;
+    flex: 0 0 41px !important;
+    width: 41px !important;
+    min-width: 41px !important;
+    max-width: 41px !important;
+    height: 57px !important;
+    min-height: 57px !important;
+    max-height: 57px !important;
+    aspect-ratio: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 5px !important;
+  }
+
+  .battle-screen .hand-fan > .playing-card .rank { font-size: 12px !important; }
+  .battle-screen .hand-fan > .playing-card .suit { font-size: 9px !important; }
+  .battle-screen .hand-fan > .playing-card .center-suit { font-size: 21px !important; }
+  .battle-screen .hand-fan > .playing-card .top-left { top: 3px !important; left: 3px !important; }
+  .battle-screen .hand-fan > .playing-card .bottom-right { bottom: 3px !important; right: 3px !important; }
+  .battle-screen .hand-fan > .playing-card.selected { transform: translateY(-7px) !important; }
+  .battle-screen .hand-fan > .playing-card:not(.selected) { transform: none !important; }
+
+  .battle-screen .bottom-bar.battle-btns {
+    box-sizing: border-box !important;
+    position: static !important;
+    flex: 0 0 40px !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 34px !important;
+    gap: 4px !important;
+    padding: 2px 0 0 !important;
+    margin: 0 !important;
+    background: none !important;
+  }
+
+  .battle-screen .battle-btn-play,
+  .battle-screen .battle-btn-discard {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 3px 6px !important;
+    font-size: 8px !important;
+  }
+
+  .battle-screen .bottom-bar.battle-btns .deck-pile {
+    min-width: 32px !important;
+    width: 32px !important;
+    transform: scale(.68) !important;
+    transform-origin: center !important;
+  }
+
+  /* ===== Blind select: 3 cards visible at once ===== */
+  .blind-select-screen {
+    box-sizing: border-box !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+  }
+
+  .blind-select-top {
+    flex: 0 0 46px !important;
+    min-height: 46px !important;
+    padding-right: 42px !important;
+  }
+
+  .blind-select-title { font-size: 18px !important; }
+  .blind-select-chips { margin-top: 2px !important; gap: 3px !important; }
+  .blind-select-chips .chip-tag { padding: 3px 6px !important; font-size: 8px !important; }
+
+  .blind-select-cards {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .blind-select-cards > .blind-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 5px 8px !important;
+    transform: none !important;
+  }
+
+  .blind-select-screen > .bottom-bar {
+    flex: 0 0 42px !important;
+    min-height: 42px !important;
+    padding: 2px 0 0 !important;
+  }
+
+  .blind-select-screen > .bottom-bar button {
+    min-height: 38px !important;
+    height: 38px !important;
+    font-size: 9px !important;
+  }
+
+  /* ===== Shop portrait: 3 offers + 5 owned slots + controls ===== */
+  .shop-screen {
+    box-sizing: border-box !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 3px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-top {
+    flex: 0 0 38px !important;
+    min-height: 38px !important;
+    padding: 0 42px 0 0 !important;
+  }
+
+  .shop-title { font-size: 18px !important; }
+  .shop-top-right { gap: 3px !important; }
+  .shop-top-right .chip-tag,
+  .shop-top-right button { min-height: 32px !important; height: 32px !important; padding: 3px 5px !important; font-size: 8px !important; }
+  .shop-section-label { margin: 0 0 2px !important; font-size: 8px !important; }
+
+  .shop-for-sale {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shop-items {
+    width: 100% !important;
+    height: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shop-items > .shop-item-card {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 4px 3px !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-item-card .joker-card.size-shop {
+    width: min(22vw, 82px) !important;
+    height: min(30vw, 112px) !important;
+    max-width: 82px !important;
+    max-height: 112px !important;
+  }
+
+  .shop-item-bottom { gap: 2px !important; }
+  .shop-item-price { font-size: 8px !important; }
+  .shop-item-bottom button { min-height: 30px !important; height: 30px !important; font-size: 8px !important; padding: 2px !important; }
+
+  .shop-owned {
+    flex: 0 0 67px !important;
+    min-height: 67px !important;
+    height: 67px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-owned-row {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shop-owned-row > .joker-card,
+  .shop-owned-row > .joker-card.empty {
+    flex: 0 0 48px !important;
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+
+  .shop-screen > .bottom-bar {
+    flex: 0 0 40px !important;
+    min-height: 40px !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1.25fr !important;
+    gap: 5px !important;
+    padding: 2px 0 0 !important;
+  }
+
+  .shop-screen > .bottom-bar button {
+    min-height: 36px !important;
+    height: 36px !important;
+    font-size: 9px !important;
+    padding: 3px 6px !important;
+  }
+}
+
+/* ---------- iPhone 12 landscape and close-size iPhones ---------- */
+@media (orientation: landscape) and (min-width: 780px) and (max-width: 900px) and (max-height: 430px) {
+  html,
+  body,
+  #app,
+  .balatro-shell,
+  .phase-panel {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .balatro-shell { padding: 0 !important; }
+
+  .phase-panel {
+    box-sizing: border-box !important;
+    padding-top: max(3px, env(safe-area-inset-top, 0px)) !important;
+    padding-right: max(5px, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: max(3px, env(safe-area-inset-bottom, 0px)) !important;
+    padding-left: max(5px, env(safe-area-inset-left, 0px)) !important;
+  }
+
+  .hud-icon-btn.settings-trigger {
+    width: 36px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    top: max(4px, env(safe-area-inset-top, 0px)) !important;
+    right: max(4px, env(safe-area-inset-right, 0px)) !important;
+  }
+
+  /* Battle landscape: compact left rail + full right board. */
+  .battle-screen {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen > .sb {
+    box-sizing: border-box !important;
+    flex: 0 0 132px !important;
+    width: 132px !important;
+    min-width: 132px !important;
+    max-width: 132px !important;
+    height: 100% !important;
+    padding: 3px 4px !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen .sb-panel { padding: 3px 4px !important; }
+  .battle-screen .sb-blind-badge { font-size: 12px !important; }
+  .battle-screen .sb-blind-name { font-size: 7px !important; }
+  .battle-screen .sb-blind-type-tag { font-size: 5px !important; }
+  .battle-screen .sb-inset-big { font-size: 14px !important; }
+  .battle-screen .sb-inset-label,
+  .battle-screen .sb-inset-sub,
+  .battle-screen .sb-panel-label,
+  .battle-screen .sb-hand-type-name,
+  .battle-screen .sb-score-unit,
+  .battle-screen .sb-hands-label,
+  .battle-screen .sb-ante-label,
+  .battle-screen .sb-ante-sep { font-size: 5px !important; }
+  .battle-screen .sb-round-val { font-size: 13px !important; }
+  .battle-screen .sb-chips-val,
+  .battle-screen .sb-mult-val { font-size: 10px !important; }
+  .battle-screen .sb-hands-val { font-size: 10px !important; }
+  .battle-screen .sb-btn { min-height: 23px !important; height: 23px !important; font-size: 5px !important; padding: 2px !important; }
+  .battle-screen .sb-btn-orange { display: none !important; }
+  .battle-screen .discard-mode-btn { min-height: 22px !important; width: 23px !important; height: 23px !important; }
+
+  .battle-screen > .battle-main {
+    box-sizing: border-box !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    padding: 2px max(4px, env(safe-area-inset-right, 0px)) max(2px, env(safe-area-inset-bottom, 0px)) 4px !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen .joker-bar {
+    flex: 0 0 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 2px 4px !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .battle-screen .joker-bar-label { font-size: 4.5px !important; }
+
+  .battle-screen .joker-bar .joker-bar-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  .battle-screen .joker-bar .joker-bar-row > .joker-card,
+  .battle-screen .joker-bar .joker-bar-row > .joker-card.empty {
+    flex: 0 0 39px !important;
+    width: 39px !important;
+    min-width: 39px !important;
+    max-width: 39px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .battle-screen .joker-bar .empty-plus { font-size: 9px !important; }
+  .battle-screen .joker-bar .empty-label { font-size: 3px !important; }
+
+  .battle-screen .play-table {
+    flex: 1 1 auto !important;
+    min-height: 40px !important;
+    max-height: none !important;
+  }
+
+  .battle-screen .play-table-idle,
+  .battle-screen .play-table-preview,
+  .battle-screen .play-table-scored { padding: 2px !important; gap: 1px !important; }
+  .battle-screen .play-table-placeholder { font-size: 7px !important; }
+
+  .battle-screen .hand-area {
+    flex: 0 0 88px !important;
+    height: 88px !important;
+    min-height: 88px !important;
+  }
+
+  .battle-screen .hand-area-header { height: 24px !important; min-height: 24px !important; }
+  .battle-screen .hand-area-label { font-size: 7px !important; }
+  .battle-screen .hand-area-sorts .btn-sort { min-height: 22px !important; height: 22px !important; padding: 2px 5px !important; font-size: 6px !important; }
+
+  .battle-screen .hand-fan {
+    flex: 0 0 64px !important;
+    width: 100% !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    gap: 4px !important;
+    padding: 7px 0 1px !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  .battle-screen .hand-fan > .hand-card.playing-card,
+  .battle-screen .hand-fan > .hand-card.playing-card.compact {
+    flex: 0 0 45px !important;
+    width: 45px !important;
+    min-width: 45px !important;
+    max-width: 45px !important;
+    height: 63px !important;
+    min-height: 63px !important;
+    max-height: 63px !important;
+    margin: 0 !important;
+    border-radius: 5px !important;
+  }
+
+  .battle-screen .hand-fan > .playing-card .rank { font-size: 12px !important; }
+  .battle-screen .hand-fan > .playing-card .suit { font-size: 9px !important; }
+  .battle-screen .hand-fan > .playing-card .center-suit { font-size: 22px !important; }
+  .battle-screen .hand-fan > .playing-card.selected { transform: translateY(-7px) !important; }
+  .battle-screen .hand-fan > .playing-card:not(.selected) { transform: none !important; }
+
+  .battle-screen .bottom-bar.battle-btns {
+    flex: 0 0 34px !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    grid-template-columns: 1fr 1fr 30px !important;
+    gap: 4px !important;
+    padding: 1px 0 0 !important;
+  }
+  .battle-screen .battle-btn-play,
+  .battle-screen .battle-btn-discard { min-height: 31px !important; height: 31px !important; font-size: 7px !important; padding: 2px 5px !important; }
+  .battle-screen .bottom-bar.battle-btns .deck-pile { min-width: 29px !important; width: 29px !important; transform: scale(.62) !important; }
+
+  /* Shop landscape: every item fully visible, no vertical slice/clipping. */
+  .shop-screen {
+    height: 100% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-top {
+    flex: 0 0 31px !important;
+    min-height: 31px !important;
+    padding: 0 40px 0 0 !important;
+  }
+  .shop-title { font-size: 17px !important; }
+  .shop-top-right .chip-tag,
+  .shop-top-right button { min-height: 29px !important; height: 29px !important; padding: 2px 5px !important; font-size: 8px !important; }
+  .shop-section-label { margin: 0 0 1px !important; font-size: 7px !important; }
+
+  .shop-for-sale {
+    flex: 0 0 119px !important;
+    height: 119px !important;
+    min-height: 119px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-items {
+    width: 100% !important;
+    height: 105px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shop-items > .shop-item-card {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 105px !important;
+    display: grid !important;
+    grid-template-columns: 70px 1fr !important;
+    grid-template-rows: 1fr !important;
+    align-items: center !important;
+    padding: 3px 4px !important;
+    gap: 4px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-item-art-wrap { width: 70px !important; padding: 0 !important; }
+  .shop-item-card .joker-card.size-shop {
+    width: 66px !important;
+    height: 91px !important;
+    max-width: 66px !important;
+    max-height: 91px !important;
+  }
+
+  .shop-item-card .joker-card.size-shop .card-name-band { top: 3px !important; left: 3px !important; right: 3px !important; height: 13px !important; }
+  .shop-item-card .joker-card.size-shop .card-name { font-size: 4px !important; }
+  .shop-item-card .joker-card.size-shop .card-art { top: 18px !important; left: 3px !important; right: 3px !important; height: 38px !important; }
+  .shop-item-card .joker-card.size-shop .card-desc-band { bottom: 3px !important; left: 3px !important; right: 3px !important; height: 27px !important; padding: 1px 2px !important; }
+  .shop-item-card .joker-card.size-shop .card-desc { font-size: 5px !important; line-height: .9 !important; }
+  .shop-item-bottom { flex-direction: column !important; justify-content: center !important; gap: 4px !important; margin: 0 !important; }
+  .shop-item-price { font-size: 8px !important; }
+  .shop-item-bottom button { min-height: 28px !important; height: 28px !important; font-size: 7px !important; padding: 2px !important; }
+
+  .shop-owned {
+    flex: 0 0 55px !important;
+    height: 55px !important;
+    min-height: 55px !important;
+    overflow: hidden !important;
+  }
+
+  .shop-owned-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .shop-owned-row > .joker-card,
+  .shop-owned-row > .joker-card.empty {
+    flex: 0 0 38px !important;
+    width: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+  }
+
+  .shop-screen > .bottom-bar {
+    flex: 0 0 33px !important;
+    min-height: 33px !important;
+    height: 33px !important;
+    padding: 1px 0 0 !important;
+  }
+  .shop-screen > .bottom-bar button { min-height: 30px !important; height: 30px !important; padding: 2px 7px !important; font-size: 8px !important; }
+
+  /* Blind selection landscape: all 3 cards side-by-side. */
+  .blind-select-screen {
+    height: 100% !important;
+    min-height: 0 !important;
+    gap: 3px !important;
+    overflow: hidden !important;
+  }
+  .blind-select-top { flex: 0 0 31px !important; min-height: 31px !important; padding-right: 40px !important; }
+  .blind-select-title { font-size: 16px !important; }
+  .blind-select-chips { margin-top: 1px !important; gap: 3px !important; }
+  .blind-select-chips .chip-tag { padding: 2px 5px !important; font-size: 7px !important; }
+  .blind-select-cards {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .blind-select-cards > .blind-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 4px 6px !important;
+    transform: none !important;
+  }
+  .blind-select-screen > .bottom-bar { flex: 0 0 32px !important; min-height: 32px !important; padding: 1px 0 0 !important; }
+  .blind-select-screen > .bottom-bar button { min-height: 29px !important; height: 29px !important; padding: 2px 7px !important; font-size: 8px !important; }
+}
